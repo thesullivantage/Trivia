@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>Trivia Time!</title>
+</head>
+
+<body>
+    <!-- Daft punk text for title -->
+    <div class="container" id="main-container">
+        <div class="row">
+            <div class="col-lg-12" id="timer">
+                <button type='button' class='btn btn-primary' id='start-button'>Begin</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12" id="question"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12" id="options"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12" id="status"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12" id="image"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12" id="wins"></div>
+        </div>  
+        <div class="row">
+            <div class="col-lg-12" id="losses"></div>
+        </div>
+    </div>
+<script>
+    //variables
+    var wins = 0
+    var losses = 0
+    var correct = 0
+    var incorrect = 0 
+    var time;
+    var questions = [{
+            ques: "When was the first Air Max made?",
+            ans: ["2000", "1987", "1995", "1988"],
+            name: "firstAirmax",
+            correct: "1987",
+        },
+        {
+            ques: "Nike paid design student, Carolyn Davison, how much for their Swoosh Logo?",
+            ans: ["$1000", "$13", "$100", "$35"],
+            name: "swoosh",
+            correct: "$35",
+        },
+        {
+            ques: "What was the first clothing brand to partner with Nike?",
+            ans: ["Patta", "Undefeated", "Stussy", "Diamond Supply Co."],
+            name: "colab",
+            correct: "Stussy",
+        },
+        {
+            ques: "Who was Nike's first professional athlete endorser?",
+            ans: ["John McEnroe", "Michael Jordan", "Ilie Nastase", "Steve Prefontaine"],
+            name: "endorser",
+            correct: "Ilie Nastase",
+        },
+        {
+            ques: "When was the first Air Force 1 made?",
+            ans: ["1982", "1983", "1984", "1985"],
+            name: "firstForce",
+            correct: "1982",
+        },
+        {
+            ques: "Who designed the Air Max technology?",
+            ans: ["Phil Knight", "Bill Bowerman", "Tinker Hatfield", "Hidefumi Hommyo"],
+            name: "airMaxDesigner",
+            correct: "Tinker Hatfield",
+        },
+        {
+            ques: "When was the first Air Jordan 1's released to the public?",
+            ans: ["2000", "1987", "1995", "1985"],
+            name: "jordan",
+            correct: "1985",
+        },
+        {
+            ques: "Nike's first sneaker design goes under what name today?",
+            ans: ["Air Max 1", " Cortez", "Structure Triax", "Air Force 1"],
+            name: "firstDesign",
+            correct: "Cortez",
+        },
+        {
+            ques: "Which state was Nike's first retail space was opened in?",
+            ans: ["Oregon", "New York", "California", "Florida"],
+            name: "retailStore",
+            correct: "California",
+        },
+        {
+            ques: "Nike was originally a distribution company for which brand?",
+            ans: ["Adidas", "New Balance", "Saucony", "Onitsuka Tiger"],
+            name: "distribution",
+            correct: "Onitsuka Tiger",
+        }
+    ]
+
+    timerRun = function(intervalId) {
+        clearInterval(intervalId)
+        intervalId = setInterval(decrement, 1000)
+    } 
+
+    decrement = function () {
+        time--
+        if (time === 0) {
+            clearInterval(intervalId)
+        }   
+    } 
+    
+    
+    
+    $("#start-button").on("click", function() {
+        $("#timer").empty()
+        initiate()
+    });
+
+    initiate = function() {
+        for (i = 0; i < questions.length; i++) {
+            time = 30
+            $("#question").text(questions[i].ques)
+            $("#timer").text("Time Left: " + time)
+            $("<button type='button' class='btn btn-primary' id='option1'>").text(questions[i].ans[0])
+            $("<button type='button' class='btn btn-primary' id='option2'>").text(questions[i].ans[1])
+            $("<button type='button' class='btn btn-primary' id='option3'>").text(questions[i].ans[2])
+            $("<button type='button' class='btn btn-primary' id='option4'>").text(questions[i].ans[3])
+            $("options").append("#option");
+            
+            timerRun()
+
+            $("#option").on("click", function(){
+                clearInterval(intervalId);
+                $("#options").empty();
+                $("#timer").empty(); 
+                $("#question").empty();               
+                if ($(this).text() === questions[i].correct) {
+                    $("#status").text("CORRECT!");
+                    $("#image").attr()
+                    correct++;
+                } else {
+                    $("#status").text("INCORRECT!");
+                    $("#image").attr()
+                    incorrect++;
+                }
+                setTimeout(function() {
+                    $("#status").empty();
+                    $("#image").empty();
+                }, 5000)
+            })
+            
+            if (time === 0) {
+                clearInterval(intervalId);
+                incorrect++;
+                $("#options").empty();
+                $("#timer").empty(); 
+                $("#question").empty(); 
+                $("#status").text("OUT OF TIME!");
+                $("#image").attr();
+                setTimeout(function() {
+                    $("#status").empty();
+                    $("#image").empty();
+                }, 5000)
+            }
+        }
+        
+        endGame = function() {
+            if ((correct/questions.length)>=0.8) {
+                wins++;
+                $("#status").text("YOU WIN!");
+                $("#image").attr();
+            } else {
+                losses++;
+                $("#status").text("YOU ARE A FAILURE THAT WILL NEVER AMOUNT TO ANYTHING!");
+                $("#image").attr();
+            }
+            $("#wins").html("<p>Wins: " + wins + "</p>")
+            $("#losses").html("<p>Losses: " + losses + "</p>")
+            setTimeout(function() {
+                $("#status").empty();
+                $("#image").empty();
+                $("#wins").empty();
+                $("#losses").empty();
+                initiate();
+            }, 5000)
+        }
+        
+        endGame()
+    
+        
+
+    //on next question function
+        //display 4 options 
+        //display question
+        //start countdown timer
+        //execute timeout function if time = 0 
+            //take player to timeout page (maybe display titles in the question div)
+                //display correct answer (highlight)
+        //listen for click event on correct option, take to "right" page
+            //congratulate the user
+            //display some image 
+        //listen for click event on other option, take to "wrong" page
+            //display correct answer (highlight )
+    //end game 
+        //if right answers/wrong answers => 8/10
+            //Display You Win!
+        //else 
+            //You lose 
+        //Play again button
+
+//STRUCTURE------------------------------------------------------------------
+//game start function define
+    //correct guesses = 0
+    //incorrect guesses = 0
+//for loop: for length of questions array (the one that holds the objects); may need to make length-1 
+//because first question is called in the start game function
+    //populate question and options div    
+
+
+//call functions section
+
+//
+
+
+
+</script>
+
+
+</body>
+
+</html>
