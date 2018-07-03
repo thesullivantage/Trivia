@@ -1,0 +1,49 @@
+body {
+    background-image: url("assets/nikeBackground.jpg");
+    color: white;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.container {
+    padding: 100px;
+}
+
+#heading {
+    padding: 5px;
+    margin: 20px auto 50px;
+    font-size: 65px;
+}
+
+#timer {
+   margin: 20px auto 20px;
+   bottom: 130px;
+   font-size: 36px; 
+}
+
+#question {
+    font-size: 36px;
+    bottom: 135px;
+}
+
+#status {
+    position: relative;
+    bottom: 160px;
+    font-size: 65px;
+}
+
+#options {
+    bottom: 115px;
+}
+
+.option {
+margin: 20px 20px 20px;
+font-size: 24px;
+}
+
+.endgame {
+    bottom: 150px
+}
+
+.playgain {
+    font-size: 24px;
+}

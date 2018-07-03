@@ -14,195 +14,230 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <title>Trivia Time!</title>
 </head>
 
 <body>
-    <!-- Daft punk text for title -->
+    <h1 class="text-center" id="heading">Nike Trivia</h1>
     <div class="container" id="main-container">
         <div class="row">
-            <div class="col-lg-12" id="timer">
+            <div class="col-lg-12 text-center" id="timer">
                 <button type='button' class='btn btn-primary' id='start-button'>Begin</button>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-12" id="question"></div>
+            <div class="col-lg-12 mx-auto text-center" id="question"></div>
         </div>
         <div class="row">
-            <div class="col-lg-12" id="options"></div>
+            <div class="col-lg-12 mx-auto text-center" id="options"></div>
         </div>
         <div class="row">
-            <div class="col-lg-12" id="status"></div>
+            <div class="col-lg-12 mx-auto text-center" id="status"></div>
         </div>
         <div class="row">
-            <div class="col-lg-12" id="image"></div>
+            <div class="col-lg-12 mx-auto text-center" id="image"></div>
         </div>
         <div class="row">
-            <div class="col-lg-12" id="wins"></div>
+            <div class="col-lg-12 mx-auto text-center endgame" id="wins"></div>
         </div>  
         <div class="row">
-            <div class="col-lg-12" id="losses"></div>
+            <div class="col-lg-12 mx-auto text-center endgame" id="losses"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 mx-auto text-center endgame" id="correct"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 mx-auto text-center endgame" id="incorrect"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 mx-auto text-center endgame" id="unanswered"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 mx-auto text-center endgame" id="play-again"></div>
         </div>
     </div>
 <script>
     //variables
-    var wins = 0
-    var losses = 0
-    var correct = 0
-    var incorrect = 0 
-    var time;
+    var wins = 0;
+    var losses = 0;
+    var correct = 0;
+    var incorrect = 0; 
+    var unanswered = 0;
+    var time = 30;
+    var questionCounter = 0;
+    var intervalId;
     var questions = [{
             ques: "When was the first Air Max made?",
             ans: ["2000", "1987", "1995", "1988"],
-            name: "firstAirmax",
             correct: "1987",
         },
         {
             ques: "Nike paid design student, Carolyn Davison, how much for their Swoosh Logo?",
             ans: ["$1000", "$13", "$100", "$35"],
-            name: "swoosh",
             correct: "$35",
         },
         {
             ques: "What was the first clothing brand to partner with Nike?",
             ans: ["Patta", "Undefeated", "Stussy", "Diamond Supply Co."],
-            name: "colab",
             correct: "Stussy",
         },
         {
             ques: "Who was Nike's first professional athlete endorser?",
             ans: ["John McEnroe", "Michael Jordan", "Ilie Nastase", "Steve Prefontaine"],
-            name: "endorser",
             correct: "Ilie Nastase",
         },
         {
             ques: "When was the first Air Force 1 made?",
             ans: ["1982", "1983", "1984", "1985"],
-            name: "firstForce",
             correct: "1982",
         },
         {
             ques: "Who designed the Air Max technology?",
             ans: ["Phil Knight", "Bill Bowerman", "Tinker Hatfield", "Hidefumi Hommyo"],
-            name: "airMaxDesigner",
             correct: "Tinker Hatfield",
         },
         {
             ques: "When was the first Air Jordan 1's released to the public?",
             ans: ["2000", "1987", "1995", "1985"],
-            name: "jordan",
             correct: "1985",
         },
         {
             ques: "Nike's first sneaker design goes under what name today?",
             ans: ["Air Max 1", " Cortez", "Structure Triax", "Air Force 1"],
-            name: "firstDesign",
             correct: "Cortez",
         },
         {
             ques: "Which state was Nike's first retail space was opened in?",
             ans: ["Oregon", "New York", "California", "Florida"],
-            name: "retailStore",
             correct: "California",
         },
         {
             ques: "Nike was originally a distribution company for which brand?",
             ans: ["Adidas", "New Balance", "Saucony", "Onitsuka Tiger"],
-            name: "distribution",
             correct: "Onitsuka Tiger",
         }
     ]
 
-    timerRun = function(intervalId) {
-        clearInterval(intervalId)
+    function timerRun() {
+        //clearInterval()
         intervalId = setInterval(decrement, 1000)
+        console.log(time)
     } 
 
-    decrement = function () {
-        time--
-        if (time === 0) {
-            clearInterval(intervalId)
-        }   
+    function decrement () {
+        if (time > 0){
+            time--;
+            $("#timer").html("Time Left: " + time)
+        } else if (time === 0) {
+            clearInterval(intervalId);
+            incorrect++;
+            $("#options").empty();
+            $("#timer").empty(); 
+            $("#question").empty(); 
+            $("#status").text("OUT OF TIME!");
+            //$("#image").attr();
+            unanswered++;
+            questionCounter++;
+            setTimeout(function() {
+                $("#status").empty();
+                $("#image").empty();
+                initiate();
+            }, 2000)
+        }  
     } 
-    
-    
     
     $("#start-button").on("click", function() {
         $("#timer").empty()
         initiate()
+        console.log("button clicked")
     });
 
-    initiate = function() {
-        for (i = 0; i < questions.length; i++) {
-            time = 30
-            $("#question").text(questions[i].ques)
-            $("#timer").text("Time Left: " + time)
-            $("<button type='button' class='btn btn-primary' id='option1'>").text(questions[i].ans[0])
-            $("<button type='button' class='btn btn-primary' id='option2'>").text(questions[i].ans[1])
-            $("<button type='button' class='btn btn-primary' id='option3'>").text(questions[i].ans[2])
-            $("<button type='button' class='btn btn-primary' id='option4'>").text(questions[i].ans[3])
-            $("options").append("#option");
-            
-            timerRun()
-
-            $("#option").on("click", function(){
-                clearInterval(intervalId);
-                $("#options").empty();
-                $("#timer").empty(); 
-                $("#question").empty();               
-                if ($(this).text() === questions[i].correct) {
-                    $("#status").text("CORRECT!");
-                    $("#image").attr()
-                    correct++;
-                } else {
-                    $("#status").text("INCORRECT!");
-                    $("#image").attr()
-                    incorrect++;
-                }
-                setTimeout(function() {
-                    $("#status").empty();
-                    $("#image").empty();
-                }, 5000)
-            })
-            
-            if (time === 0) {
-                clearInterval(intervalId);
-                incorrect++;
-                $("#options").empty();
-                $("#timer").empty(); 
-                $("#question").empty(); 
-                $("#status").text("OUT OF TIME!");
-                $("#image").attr();
-                setTimeout(function() {
-                    $("#status").empty();
-                    $("#image").empty();
-                }, 5000)
-            }
-        }
+    function initiate() {
         
-        endGame = function() {
-            if ((correct/questions.length)>=0.8) {
-                wins++;
-                $("#status").text("YOU WIN!");
-                $("#image").attr();
-            } else {
-                losses++;
-                $("#status").text("YOU ARE A FAILURE THAT WILL NEVER AMOUNT TO ANYTHING!");
-                $("#image").attr();
-            }
-            $("#wins").html("<p>Wins: " + wins + "</p>")
-            $("#losses").html("<p>Losses: " + losses + "</p>")
-            setTimeout(function() {
-                $("#status").empty();
-                $("#image").empty();
-                $("#wins").empty();
-                $("#losses").empty();
-                initiate();
-            }, 5000)
-        }
-        
-        endGame()
+        if (questionCounter <= 9) {
     
+        time = 300;
+        $("#question").text(questions[questionCounter].ques)
+        $("#timer").html("Time Left: " + time)
+        var button1 = $("<button type='button' class='option btn btn-primary' id='option1'>").text(questions[questionCounter].ans[0])
+        var button2 = $("<button type='button' class='option btn btn-primary' id='option2'>").text(questions[questionCounter].ans[1])
+        var button3 = $("<button type='button' class='option btn btn-primary' id='option3'>").text(questions[questionCounter].ans[2])
+        var button4 = $("<button type='button' class='option btn btn-primary' id='option4'>").text(questions[questionCounter].ans[3])
+        $("#options").append(button1, button2, button3, button4);
+
+        timerRun()
+
+        } else if (questionCounter > 9) {
+            endGame();
+        }
+    }
+
+    $("#options").on("click", ".option" , function(){
+        console.log(this)
+        clearInterval(intervalId);
+        $("#options").empty();
+        $("#timer").empty(); 
+        $("#question").empty();               
+        if ($(this).text() === questions[questionCounter].correct) {
+            $("#status").text("CORRECT!");
+            $("#image").attr("src", "https://media2.giphy.com/media/ROUMCBrX9Vkcw/giphy.gif")
+            correct++;
+            questionCounter++;
+        } else {
+            $("#status").text("INCORRECT!");
+            $("#image").attr("src", "")
+            incorrect++;
+            questionCounter++;
+        }
+        setTimeout(function() {
+            $("#status").empty();
+            $("#image").empty();
+            initiate();
+        }, 2000)
+    })
+    
+    function endGame() {
+        if ((correct/questions.length)>=0.8) {
+            wins++;
+            $("#status").text("YOU WIN!");
+            //$("#image").attr();
+        } else {
+            losses++;
+            $("#status").text("YOU ARE A FAILURE THAT WILL NEVER AMOUNT TO ANYTHING!");
+            //$("#image").attr();
+        }
+       //rename
+        $("#status").text("GAME OVER!")
+
+        $("#wins").html("<p>Wins: " + wins + "</p>")
+       //remame
+        $("#losses").html("<p>Losses: " + losses + "</p>")
+
+        $("#correct").html("<p>Correct: " + correct + "</p>")
+
+        $("#incorrect").html("<p>Incorrect: " + incorrect + "</p>")
+
+        $("#unanswered").html("<p>Unanswered: " + unanswered + "</p>")
+        //create unanswered div, variable, and display here; increment unanswered in the decrement function
+        $("#play-again").append($("<button type='button' class='playgain btn btn-primary'>"));
+        
+        $(".playgain").text("PLAY AGAIN")
+    }
+
+    $("#play-again").on("click", ".playgain", function(){
+        $("#status").empty();
+        $("#image").empty();
+        $("#wins").empty();
+        $("#losses").empty();
+        $("#correct").empty();
+        $("#incorrect").empty();
+        $("#play-again").empty();
+        $("#unanswered").empty();
+        questionCounter = 0
+        initiate();
+    })
         
 
     //on next question function
